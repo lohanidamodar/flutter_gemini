@@ -6,7 +6,7 @@ This is also an example to showcase the use of [Generative AI Dart package](http
 
 ## Follow the tutorial
 
-- [https://appwriters.dev/blog/google-generative-ai-with-flutter]
+- [https://appwriters.dev/blog/google-generative-ai-with-flutter](https://appwriters.dev/blog/google-generative-ai-with-flutter)
 
 ## Getting Started
 
