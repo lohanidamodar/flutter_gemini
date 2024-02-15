@@ -17,6 +17,19 @@ class _HomeState extends State<Home> {
   final GenerativeModel _model =
       GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
   bool _loading = false;
+  final ScrollController _scrollController = ScrollController();
+
+  void _scrollDown() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(
+          milliseconds: 750,
+        ),
+        curve: Curves.easeOutCirc,
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -30,6 +43,7 @@ class _HomeState extends State<Home> {
       body: Column(children: [
         Expanded(
           child: ListView(
+            controller: _scrollController,
             padding: const EdgeInsets.all(16.0),
             children: [
               ..._session.history.map(
@@ -69,6 +83,11 @@ class _HomeState extends State<Home> {
                     border: OutlineInputBorder(),
                     hintText: 'Enter your prompt',
                   ),
+                  onEditingComplete: () {
+                    if (!_loading) {
+                      _sendMessage();
+                    }
+                  },
                 ),
               ),
               _loading
@@ -102,6 +121,7 @@ class _HomeState extends State<Home> {
       } else {
         setState(() {
           _loading = false;
+          _scrollDown();
         });
       }
     } catch (e) {
