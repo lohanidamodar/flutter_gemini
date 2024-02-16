@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
-
-import 'config.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,9 +9,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final _inputController = TextEditingController();
-  late final ChatSession _session;
-  final GenerativeModel _model =
-      GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
   bool _loading = false;
   final ScrollController _scrollController = ScrollController();
 
@@ -32,12 +25,6 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _session = _model.startChat();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
@@ -45,31 +32,7 @@ class _HomeState extends State<Home> {
           child: ListView(
             controller: _scrollController,
             padding: const EdgeInsets.all(16.0),
-            children: [
-              ..._session.history.map(
-                (content) {
-                  var text = content.parts
-                      .whereType<TextPart>()
-                      .map<String>((e) => e.text)
-                      .join('');
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        content.role == 'user' ? 'User:' : 'Gemini:',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      MarkdownBody(data: text),
-                      const SizedBox(height: 10.0),
-                    ],
-                  );
-                },
-              ),
-            ],
+            children: [],
           ),
         ),
         Padding(
@@ -103,44 +66,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  _sendMessage() async {
-    setState(() {
-      _loading = true;
-    });
-    try {
-      final response =
-          await _session.sendMessage(Content.text(_inputController.text));
-      var text = response.text;
-
-      if (text == null) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No response from API')));
-        }
-        return;
-      } else {
-        setState(() {
-          _loading = false;
-          _scrollDown();
-        });
-      }
-    } catch (e) {
-      _showError(e.toString());
-      setState(() {
-        _loading = false;
-      });
-    } finally {
-      _inputController.clear();
-      setState(() {
-        _loading = false;
-      });
-    }
-  }
-
-  _showError(String message) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
-    }
+  void _sendMessage() {
+    debugPrint(_inputController.text);
   }
 }

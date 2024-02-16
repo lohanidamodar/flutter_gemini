@@ -1,3 +1,0 @@
-// rename to config.dart and update with your api key
-// https://makersuite.google.com/app/apikey
-const apiKey = 'YOUR_API_KEY';
