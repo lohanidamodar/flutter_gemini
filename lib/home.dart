@@ -64,6 +64,7 @@ class _HomeState extends State<Home> {
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       MarkdownBody(data: text),
+                      const Divider(),
                       const SizedBox(height: 10.0),
                     ],
                   );
@@ -110,14 +111,9 @@ class _HomeState extends State<Home> {
     try {
       final response =
           await _session.sendMessage(Content.text(_inputController.text));
-      var text = response.text;
 
-      if (text == null) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No response from API')));
-        }
-        return;
+      if (response.text == null) {
+        _showError('No response from API');
       } else {
         setState(() {
           _loading = false;
